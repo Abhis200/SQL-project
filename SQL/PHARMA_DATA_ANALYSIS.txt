@@ -1,0 +1,141 @@
+1. Retrieve all columns for all records in the dataset. 
+
+ 	SELECT *
+	FROM PHARMA_DATA_ANALYSIS;
+
+2. How many unique countries are represented in the dataset?
+
+	SELECT COUNT (DISTINCT COUNTRY)
+	FROM PHARMA_DATA_ANALYSIS;
+
+3. Select the names of all the customers on the 'Retail' channel.
+
+ 	SELECT CUSTOMER_NAME
+	FROM PHARMA_DATA_ANALYSIS
+	WHERE CHANNEL ='RETAIL';
+
+4. Find the total quantity sold for the 'Electronics' product class.
+
+  	SELECT SUM(QUANTITY)
+	FROM PHARMA_DATA_ANALYSIS
+	WHERE PRODUCT_CLASS='ELECTRONICS';
+
+5. List all the distinct months present in the dataset.
+
+  	SELECT DISTINCT MONTH
+	FROM PHARMA_DATA_ANALYSIS;
+
+6. Calculate the total sales for each year. 
+
+	SELECT SUM(SALES),YEAR
+	FROM PHARMA_DATA_ANALYSIS
+	GROUP BY YEAR;
+
+7. Find the customer with the highest sales value.
+
+ 	SELECT CUSTOMER_NAME
+	FROM PHARMA_DATA_ANALYSIS
+	WHERE SALES IN(SELECT MAX(SALES)
+	FROM PHARMA_DATA_ANALYSIS);
+
+8. Get the names of all employees who are Sales Reps and are managed by 'John
+Smith
+
+ 	SELECT NAME_OF_SALES_REP
+	FROM PHARMA_DATA_ANALYSIS
+	WHERE MANAGER='JOHN SMITH';
+
+9. Retrieve the top 5 cities with the highest sales
+
+	SELECT CITY
+	FROM PHARMA_DATA_ANALYSIS P1
+	WHERE 5=(SELECT COUNT(DISTINCT ROWID)
+	FROM PHARMA_DATA_ANALYSIS P2
+	WHERE P1.ROWID>=P2.ROWID)
+	ORDER BY SALE DESC;
+
+10. Calculate the average price of products in each sub-channel.
+
+ 	SELECT AVG(PRICE),SUB_CHANNEL
+	FROM PHARMA_DATA_ANALYSIS
+	GROUP BY SUB-CHANNEL;
+
+11.Join the 'Employees' table with the 'Sales' table to get the name of the Sales Rep
+and the corresponding sales records.
+
+	SELECT Employees.employee_name,Sales.sales_record
+	FROM Employees
+	JOIN Sales ON Employees.employee_id = Sales.sales_rep_id;
+
+12. Retrieve all sales made by employees from 'New York' in the year 2022. 
+
+	SELECT SALES
+	FROM PHARMA_DATA_ANALYSIS
+	WHERE YEAR LIKE '%2022' AND CITY='NEW YORK';
+
+13. Calculate the total sales for each product class, for each month, and order the results by year, month, and product class. 
+
+	SELECT SUM(SALES), PRODUCT_CLASS,MONTH
+	FROM PHARMA_DATA_ANALYSIS
+	GROUP BY PRODUCT_CLASS,MONTH
+	ORDER BY YEAR,MONTH,PRODUCT_CLASS;
+
+14. Find the top 3 sales reps with the highest sales in 2023.
+
+ 	SELECT NAME_OF_SALES_REP
+	FROM PHARMA_DATA_ANALYSIS
+	WHERE ROWNUM<4
+	ORDER BY SALE DESC;
+
+15. Calculate the monthly total sales for each sub-channel, and then calculate the average monthly sales for each sub-channel over the years.
+
+ 	SELECT SUM(SALES),AVG(SALES)
+	FROM PHARMA_DATA_ANALYSIS
+	WHERE SALES IN(SELECT SALES
+	FROM PHARMA_DATA_ANALYSIS
+	WHERE YEAR IS NOT NULL)
+	GROUP BY MONTH,SUB-CHANNEL;
+
+16. Create a summary report that includes the total sales, average price, and total quantity sold for each product class.
+
+ 	SELECT SUM(SALES),SUM(QUANTITY),AVG(PRICE)
+	FROM PHARMA_DATA_ANALYSIS
+	GROUP BY PRODUCT CLASS;
+
+17. Find the top 5 customers with the highest sales for each year.
+
+ 	SELECT CUSTOMER_NAME
+	FROM PHARMA_DATA_ANALYSIS P1
+	WHERE 5=((SELECT COUNT(DISTINCT ROWID)
+	FROM PHARMA_DATA_ANALYSIS P2
+	WHERE P1.ROWID>=P2.ROWID)
+	GROUP BY YEAR
+	ORDER BY SALES DESC;
+
+18. Calculate the year-over-year growth in SALES for each country.
+
+ 	SELECT
+	COUNTRY, EXTRACT(YEAR FROM SALES_DATE) AS SALES_YEAR, SUM(SALES_AMOUNT) AS TOTAL_SALES, LAG(SUM(SALES_AMOUNT)) OVER (PARTITION BY COUNTRY ORDER BY
+	EXTRACT(YEAR FROM SALES_DATE)) AS PREVIOUS_YEAR_SALES, (SUM(SALES_AMOUNT) - LAG(SUM(SALES_AMOUNT)) OVER (PARTITION BY
+	COUNTRY ORDER BY EXTRACT(YEAR FROM SALES_DATE))) /
+	LAG(SUM(SALES_AMOUNT)) OVER (PARTITION BY COUNTRY ORDER BY
+	EXTRACT(YEAR FROM SALES_DATE)) * 100 AS yoy_growth
+	FROM SALES
+	GROUP BY COUNTRY, EXTRACT(YEAR FROM SALES_DATE)
+	ORDER BY COUNTRY,SALES_YEAR;
+
+19. List the months with the lowest sales for each year.
+ 
+ 	SELECT MONTH
+	FROM PHARMA_DATA_ANALYSIS
+	WHERE SALES IN (SELECT MIN(SALES)
+	FROM PHARMA_DATA_ANALYSIS)
+	GROUP BY YEAR;
+
+20. Calculate the total sales for each sub-channel in each country, and then find the country with the highest total sales for each sub-channel.
+
+ 	SELECT SUM(SALES)
+	FROM PHARMA_DATA_ANALYSIS
+	WHERE SALES IN(SELECT MAX(SAL)
+	FROM PHARMA_DATA_ANALYSIS
+	GROUP BY COUNTRY,SUB-CHANNEL;
